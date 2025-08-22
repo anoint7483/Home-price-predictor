@@ -1,0 +1,57 @@
+project:
+  seed: 42
+  target: SalePrice
+  log1p_target: true
+
+paths:
+  raw_train: data/raw/train.csv
+  raw_test: data/raw/test.csv
+  processed_train: data/processed/train_processed.csv
+  processed_test: data/processed/test_processed.csv
+  model_dir: models
+  best_model_path: models/home_price_model.pkl
+
+preprocessing:
+  numeric_imputer: median
+  categorical_imputer: most_frequent
+  scale_numeric: true
+  encoder:
+    type: onehot
+    handle_unknown: ignore
+  drop_leakage_cols: []   # add here if you spot leakage later
+
+split:
+  test_size: 0.2
+  shuffle: true
+
+cv:
+  folds: 5
+  shuffle: true
+
+models:
+  linear:
+    type: LinearRegression
+    params: {}
+  ridge:
+    type: Ridge
+    params:
+      alpha: [0.1, 1.0, 10.0]
+  lasso:
+    type: Lasso
+    params:
+      alpha: [0.0005, 0.001, 0.01]
+  random_forest:
+    type: RandomForestRegressor
+    params:
+      n_estimators: [200, 400]
+      max_depth: [None, 10, 20]
+  xgboost:
+    type: XGBRegressor
+    params:
+      n_estimators: [500]
+      learning_rate: [0.05]
+      max_depth: [3, 4]
+      subsample: [0.8]
+      colsample_bytree: [0.8]
+
+metrics: [rmse, mae, r2]
